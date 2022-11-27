@@ -1,7 +1,6 @@
 from typing import List, Union, Type
 import time
-import os, sys
-# from SmarthDashboard.src.dTypes.Number import Number
+# from dTypes.Number import Number
 from src.dTypes.Number import Number
 from src.dTypes.Boolean import Boolean
 from src.dTypes.String import String
@@ -11,7 +10,7 @@ def toString(x):
 
 class SmartDashboard:
     dashboardItems: List[Union[Type[Boolean], Type[Number]]] = []
-
+    run = True
     @staticmethod
     def putNumber(key: str, value: int):
         """
@@ -29,6 +28,17 @@ class SmartDashboard:
         :param value: The value to use
         """
         SmartDashboard.__putNumber(key,value)
+
+    @staticmethod
+    def getNumber(key: str) -> Union[int, float, None]:
+        """
+        Get a number from the dashboard
+        :param key: The key to use
+        :return: The value of the key
+        """
+        if (x:=SmartDashboard.__findItem(key)) is not False:
+            return x.get()
+        return None
 
     @staticmethod
     def __putNumber(key:str,value):
@@ -58,6 +68,17 @@ class SmartDashboard:
         )
 
     @staticmethod
+    def getBoolean(key: str) -> Union[bool, None]:
+        """
+        Get a boolean from the dashboard
+        :param key: The key to use
+        :return: The value of the key
+        """
+        if (x:=SmartDashboard.__findItem(key)) is not False:
+            return x.get()
+        return None
+
+    @staticmethod
     def putString(key: str, value: str):
         """
         Add a string to the dashboard
@@ -74,6 +95,17 @@ class SmartDashboard:
         )
 
     @staticmethod
+    def getString(key: str) -> Union[str, None]:
+        """
+        Get a string from the dashboard
+        :param key: The key to use
+        :return: The value of the key
+        """
+        if (x:=SmartDashboard.__findItem(key)) is not False:
+            return x.get()
+        return None
+
+    @staticmethod
     def __findItem(key: str):
         """
         Check if a key exists
@@ -88,7 +120,7 @@ class SmartDashboard:
 
     @staticmethod
     def run():
-        while True:
+        while SmartDashboard.run:
             time.sleep(1)
             SmartDashboard.test()
 
@@ -98,10 +130,7 @@ class SmartDashboard:
 
     @staticmethod
     def kill():
-        os.exit(0)
-        os.exit(1)
-        exit()
-        sys.exit()
+        SmartDashboard.run = False
 
 
     

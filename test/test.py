@@ -2,8 +2,7 @@
 import os, sys
 sys.path.insert(0, os.path.abspath(""))
 from src.dashboard import SmartDashboard
-from threading import Thread
-
+from concurrent.futures import ThreadPoolExecutor
 import pygame
 pygame.init()
 
@@ -72,17 +71,14 @@ def main():
         pygame.draw.rect(win, (90, 200, 255), (x, y, width, height))
         pygame.display.update()
 
-    pygame.quit()
-    SmartDashboard.kill()
-    sys.exit()
 
-    # TODO: Add a way to stop the dashboard and game thread
-    quit()
+    SmartDashboard.kill()
+
+def run_io_tasks_in_parallel(tasks):
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        running_tasks = [executor.submit(task) for task in tasks]
+        for running_task in running_tasks:
+            running_task.result()
 
 if __name__ == "__main__":
-    a = Thread(target=main)
-    b = Thread(target=SmartDashboard.run)
-    a.setDaemon(False)
-    a.start()
-    b.setDaemon(False)
-    b.start()
+    run_io_tasks_in_parallel([SmartDashboard.run, main])
