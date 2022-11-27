@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 import pygame
 pygame.init()
 
+dashboard = SmartDashboard()
 
 def main():
     WIN_WIDTH = 500
@@ -75,10 +76,10 @@ def main():
     SmartDashboard.kill()
 
 def run_io_tasks_in_parallel(tasks):
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor() as executor:
         running_tasks = [executor.submit(task) for task in tasks]
         for running_task in running_tasks:
             running_task.result()
 
 if __name__ == "__main__":
-    run_io_tasks_in_parallel([SmartDashboard.run, main])
+    run_io_tasks_in_parallel([main, dashboard.run, dashboard.update])

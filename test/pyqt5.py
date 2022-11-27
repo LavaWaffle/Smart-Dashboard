@@ -1,39 +1,53 @@
-import PyQt5.QtWidgets as qtw
-import PyQt5.QtGui as qtg
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, QGridLayout
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSlot
 
-class MainWindow(qtw.QWidget):
+class App(QWidget):
+
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("learn PyQt5")
-        self.setBackgroundRole(qtg.QPalette.ColorRole.Background)
-        self.setLayout(qtw.QGridLayout())
-
-        my_label = qtw.QLabel("Hello World! wat ur name?")
-        my_label.setFont(qtg.QFont("Helvetica", 18))
-        self.layout().addWidget(my_label)
-
-        # Create an entry box
-        my_entry = qtw.QLineEdit()
-        my_entry.setObjectName("name_field")
-        my_entry.setText("Enter your name here...")
-        my_entry.setMinimumHeight(50)
-        self.layout().addWidget(my_entry)
+        self.title = 'PyQt5 layout - pythonspot.com'
+        self.left = 10
+        self.top = 10
+        self.width = 500
+        self.height = 500
+        self.initUI()
         
-        # Create a button
-        my_button = qtw.QPushButton("Click me!", clicked=lambda: press_it())
-        my_button.setObjectName("my_button")
-        my_button.setFont(qtg.QFont("Helvetica", 18))
-        my_button.setMinimumHeight(35)
-        self.layout().addWidget(my_button)
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
         
-        # Show the app
+        self.createGridLayout()
+        
+        windowLayout = QVBoxLayout()
+        windowLayout.addWidget(self.horizontalGroupBox)
+        self.setLayout(windowLayout)
+        
         self.show()
+    
+    def createGridLayout(self):
+        self.horizontalGroupBox = QGroupBox("Grid")
+        layout = QGridLayout()
+        
+        layout.addWidget(QPushButton('1'),0,0)
+        self.b2 = QPushButton('2', clicked=lambda: self.removeButton(self.b2))
+        layout.addWidget(self.b2,0,1)
+        layout.addWidget(QPushButton('3'),0,2)
+        layout.addWidget(QPushButton('4'),1,0)
+        layout.addWidget(QPushButton('5'),1,1)
+        layout.addWidget(QPushButton('6'),1,2)
+        layout.addWidget(QPushButton('7'),2,0)
+        layout.addWidget(QPushButton('8'),2,1)
+        layout.addWidget(QPushButton('9'),2,2)
+        
+        self.horizontalGroupBox.setLayout(layout)
+    
+    def removeButton(self, button):
+        button.deleteLater()
+        button = None
 
-        def press_it():
-            my_label.setText(f"Hello {my_entry.text()}!")
-
-app = qtw.QApplication([])
-mw = MainWindow()
-
-# run the app
-app.exec_()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = App()
+    sys.exit(app.exec_())

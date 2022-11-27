@@ -4,6 +4,9 @@ import time
 from src.dTypes.Number import Number
 from src.dTypes.Boolean import Boolean
 from src.dTypes.String import String
+from src.gui import Ui_MainWindow
+from PyQt5 import QtWidgets
+import sys
 
 def toString(x):
     return x.get()
@@ -11,6 +14,7 @@ def toString(x):
 class SmartDashboard:
     dashboardItems: List[Union[Type[Boolean], Type[Number]]] = []
     run = True
+
     @staticmethod
     def putNumber(key: str, value: int):
         """
@@ -118,11 +122,25 @@ class SmartDashboard:
                 return item
         return False
 
-    @staticmethod
-    def run():
+    def __init__(self):
+        pass
+
+    def run(self):
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.MainWindow = QtWidgets.QMainWindow()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self.MainWindow)
+        self.MainWindow.show()
+        sys.exit(self.app.exec_())
+    
+    def update(self):
+        time.sleep(5)
         while SmartDashboard.run:
-            time.sleep(1)
-            SmartDashboard.test()
+            for i, item in enumerate(SmartDashboard.dashboardItems):
+                if (i < 16):
+                    self.ui.frames[i].set_key_value(item.key, toString(item))
+                
+            time.sleep(0.2)
 
     @staticmethod
     def test():
